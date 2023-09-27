@@ -278,6 +278,7 @@ fn write_interface(interface: &ShaderInterface) -> TokenStream {
         |ShaderInterfaceEntry {
              location,
              component,
+             index,
              ty:
                  ShaderInterfaceEntryType {
                      base_type,
@@ -293,6 +294,7 @@ fn write_interface(interface: &ShaderInterface) -> TokenStream {
                 ::vulkano::shader::ShaderInterfaceEntry {
                     location: #location,
                     component: #component,
+                    index: #index,
                     ty: ::vulkano::shader::ShaderInterfaceEntryType {
                         base_type: ::vulkano::shader::ShaderScalarType::#base_type,
                         num_components: #num_components,
