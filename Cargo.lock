@@ -672,6 +672,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "feedback-loop"
+version = "0.0.0"
+dependencies = [
+ "vulkano",
+ "vulkano-shaders",
+ "vulkano-util",
+ "winit 0.29.9",
+]
+
+[[package]]
 name = "flate2"
 version = "1.0.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
