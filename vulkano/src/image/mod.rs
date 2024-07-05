@@ -504,6 +504,29 @@ impl Image {
         self.state.lock()
     }
 
+    /// A stopgap hack by your local sheep.
+    ///
+    /// Force the image to assume the image was transitioned to `layout` for work done inside
+    /// an external command buffer.
+    /// # Safety:
+    /// * At the time of next access, image must have been externally transitioned into `layout`.
+    pub unsafe fn externally_transitioned(
+        &self,
+        layout: ImageLayout,
+    ) -> Result<(), AccessConflict> {
+        let mut state = self.state();
+        // Ensure we won't clobber other state that will cause panics elsewhere
+        state.check_gpu_write(0..self.range_size, layout)?;
+
+        // Lock + unlock, the user ensures the accesses are safe by the contract on
+        // UnsafeCommandBuffer, so we just use these functions to describe to the state
+        // that a layout transition occured.
+        state.gpu_write_lock(0..self.range_size, layout);
+        state.gpu_write_unlock(0..self.range_size);
+
+        Ok(())
+    }
+
     pub(crate) fn initial_layout_requirement(&self) -> ImageLayout {
         self.layout
     }
