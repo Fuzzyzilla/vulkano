@@ -515,7 +515,9 @@ impl Image {
     pub unsafe fn externally_transitioned(&self, layout: ImageLayout) -> Result<(), AccessError> {
         let mut state = self.state();
         // Ensure we won't clobber other state that will cause panics elsewhere
-        state.check_gpu_write(0..self.range_size, layout)?;
+        // `Undefined` layout skips layout check, since we don't care what we're moving from, we just
+        // trust the user.
+        state.check_gpu_write(0..self.range_size, ImageLayout::Undefined)?;
 
         // Lock + unlock, the user ensures the accesses are safe by the contract on
         // UnsafeCommandBuffer, so we just use these functions to describe to the state
