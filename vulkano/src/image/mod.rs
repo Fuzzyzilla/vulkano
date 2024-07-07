@@ -512,10 +512,7 @@ impl Image {
     /// * At the time of next access, image must have been externally transitioned into `layout`.
     // Layout is a property of subresources, but from what I can see vulkano keeps the whole
     // image in one layout at all times. Am I correct? Maybe.
-    pub unsafe fn externally_transitioned(
-        &self,
-        layout: ImageLayout,
-    ) -> Result<(), AccessConflict> {
+    pub unsafe fn externally_transitioned(&self, layout: ImageLayout) -> Result<(), AccessError> {
         let mut state = self.state();
         // Ensure we won't clobber other state that will cause panics elsewhere
         state.check_gpu_write(0..self.range_size, layout)?;
