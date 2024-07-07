@@ -510,6 +510,8 @@ impl Image {
     /// an external command buffer.
     /// # Safety:
     /// * At the time of next access, image must have been externally transitioned into `layout`.
+    // Layout is a property of subresources, but from what I can see vulkano keeps the whole
+    // image in one layout at all times. Am I correct? Maybe.
     pub unsafe fn externally_transitioned(
         &self,
         layout: ImageLayout,
@@ -525,6 +527,16 @@ impl Image {
         state.gpu_write_unlock(0..self.range_size);
 
         Ok(())
+    }
+
+    /// Get the layout of the image at this instant, updated after resources are cleaned
+    /// up by a queue.
+    // Layout is a property of subresources, but from what I can see vulkano keeps the whole
+    // image in one layout at all times. Am I correct? Maybe.
+    pub fn instantaneous_layout(&self) -> ImageLayout {
+        let state = self.state();
+
+        state.ranges.get(&0).unwrap().layout
     }
 
     pub(crate) fn initial_layout_requirement(&self) -> ImageLayout {
